@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#082a3c">
+  <title>Tagesrapport</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">P</span><div><strong>Tagesrapport</strong><small>Polygon Einsatzdokumentation</small></div></div>
+      <nav id="stepNav" aria-label="Rapport-Schritte"></nav>
+      <div class="sidebar-foot"><span id="saveState" class="save-state">Noch nicht gespeichert</span><button class="ghost full" id="openEmployees">Mitarbeiter verwalten</button><button class="ghost full" id="openLeaderAccess">Projektleiter-Zugänge</button><button class="ghost full" id="openReports">Projektleiter-Ordner</button><button class="ghost full" id="openLeaderLogin">Projektleiter-Login</button></div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div><p class="eyebrow" id="stepEyebrow">Schritt 1 von 7</p><h1 id="stepTitle">Grunddaten</h1></div>
+        <div class="top-actions"><select id="languageSelect" aria-label="Sprache"><option value="de">Deutsch</option><option value="fr">Français</option><option value="it">Italiano</option></select><button class="ghost" id="resetButton">Neu</button><button class="primary" id="saveButton">Zwischenspeichern</button></div>
+      </header>
+
+      <form id="reportForm" novalidate>
+        <section class="step active" data-step="0">
+          <div class="section-heading"><h2>Einsatz erfassen</h2><p>Die mit * markierten Angaben werden für den Rapport benötigt.</p></div>
+          <div class="form-grid two">
+            <label>Datum *<input type="date" name="date" required></label>
+            <label>Ausgefüllt von *<input type="text" name="reporterName" required placeholder="Vorname Nachname"></label>
+            <label>Region *<select name="region" required><option value="">Bitte wählen</option><option>Bern / Wallis</option><option>Mittelland / Nordwest</option><option>Tessin</option><option>Zürich / Ostschweiz</option></select></label>
+            <label>Projektleiter *<select name="projectLead" required><option value="">Bitte wählen</option><option>Imer Abazi</option><option>Fidan Salihi</option><option>Damiano Giarrusso</option><option>Megzon Morina</option><option>Sandro Sargenti</option><option>Armando Baldacci</option><option>Nico Gavoldi</option><option>Remo Brunner</option></select></label>
+            <label>Schadenart *<select name="damageType" id="damageType" required><option value="">Bitte wählen</option><option>Feuer</option><option>Wasser</option><option value="Andere">Anderes</option></select></label>
+            <label id="damageOtherWrap" class="hidden">Andere Schadenart<input type="text" name="damageOther" placeholder="Schadenart eingeben"></label>
+          </div>
+          <div class="card inset"><h3>Schadenort</h3><div class="form-grid three"><label>Name / Objekt *<input name="locationName" required placeholder="z. B. Musterstrasse 12"></label><label>Adresse<input name="locationAddress" placeholder="Strasse und Hausnummer"></label><label>Ort<input name="locationCity" placeholder="PLZ und Ort"></label></div></div>
+        </section>
+
+        <section class="step" data-step="1">
+          <div class="section-heading"><h2>Arbeitsbereiche</h2><p>Wählen Sie, welche Teile des Rapports benötigt werden.</p></div>
+          <div class="area-picker">
+            <label class="area-card"><input type="checkbox" name="areas" value="fh"><span class="area-icon">FH</span><strong>Fahrhabe</strong><small>Inventar, Reinigung und Transport</small></label>
+            <label class="area-card"><input type="checkbox" name="areas" value="gb"><span class="area-icon">GB</span><strong>Gebäude</strong><small>Sanierung am Gebäude</small></label>
+            <label class="area-card"><input type="checkbox" name="areas" value="tr"><span class="area-icon">TR</span><strong>Trocknung</strong><small>Aufbau, Messung und Abbau</small></label>
+          </div>
+        </section>
+
+        <section class="step" data-step="2">
+          <div class="section-heading"><h2>Arbeitsstunden</h2><p>Polygon-Mitarbeitende auswählen; Temporärmitarbeitende und Büro manuell ergänzen.</p></div>
+          <div id="workSections"></div>
+        </section>
+
+        <section class="step" data-step="3">
+          <div class="section-heading"><h2>Fahrzeuge & Zuschläge</h2><p>Nur tatsächlich verwendete Positionen ausfüllen.</p></div>
+          <div id="vehicleSections"></div>
+        </section>
+
+        <section class="step" data-step="4">
+          <div class="section-heading"><h2>Geräte</h2><p>Die Geräte sind direkt als Auswahl sichtbar – nur verwendete Positionen ausfüllen.</p></div>
+          <div id="equipmentSections"></div>
+        </section>
+
+        <section class="step" data-step="5">
+          <div class="section-heading"><h2>Material & Entsorgung</h2><p>Direkte Auswahl von Produkten und Verbrauchsmaterial; Entsorgung mit kg oder m³.</p></div>
+          <div id="materialSections"></div>
+        </section>
+
+        <section class="step" data-step="6">
+          <div class="section-heading"><h2>Prüfen & abschliessen</h2><p>Kontrollieren Sie den Rapport vor dem Speichern.</p></div>
+          <div class="card notes-card"><label>Bemerkungen<textarea name="notes" rows="5" placeholder="Ergänzungen, Besonderheiten oder Hinweise an den Projektleiter"></textarea></label></div>
+          <div id="review" class="review-grid"></div>
+          <input type="hidden" name="status" value="Entwurf">
+          <div class="card status-card"><div><p class="eyebrow">Workflow</p><strong id="currentStatus">Entwurf</strong><p class="status-help">Nach dem Übermitteln landet der Rapport im Ordner des ausgewählten Projektleiters.</p></div><div class="final-actions"><button type="button" class="ghost large" id="finalSave">Entwurf speichern</button><button type="button" class="primary large" id="submitToLead">An Projektleiter übermitteln</button></div></div>
+        </section>
+
+        <footer class="form-footer"><button type="button" class="ghost" id="prevButton">Zurück</button><div class="mobile-progress"><span id="mobileProgress"></span></div><button type="button" class="primary" id="nextButton">Weiter</button></footer>
+      </form>
+    </main>
+  </div>
+
+  <dialog id="reportsDialog"><div class="dialog-head"><div><p class="eyebrow">Workflow</p><h2>Rapporte & Stunden</h2></div><button class="icon-button" data-close aria-label="Schliessen">×</button></div><div class="dialog-tabs"><button class="tab active" data-dialog-tab="folders">Projektleiter-Ordner</button><button class="tab" data-dialog-tab="hours">Stundenübersicht</button></div><div id="reportsList" class="reports-list"></div><div id="hoursList" class="reports-list hidden"><div class="hours-filter"><label>Datum<input type="date" id="hoursDate"></label><button class="ghost" id="loadHours">Anzeigen</button></div><div id="hoursTable"></div></div></dialog>
+  <dialog id="employeesDialog"><div class="dialog-head"><div><p class="eyebrow">Stammdaten</p><h2>Polygon-Mitarbeitende</h2></div><button class="icon-button" data-close-employees aria-label="Schliessen">×</button></div><div class="employee-create"><label>Name<input id="employeeName" placeholder="Vorname Nachname"></label><button class="primary" id="addEmployee">Speichern</button></div><div id="employeesList" class="reports-list"></div></dialog>
+  <dialog id="leaderAccessDialog"><div class="dialog-head"><div><p class="eyebrow">Administration</p><h2>Projektleiter-Zugänge</h2></div><button class="icon-button" data-close-access aria-label="Schliessen">×</button></div><p class="dialog-copy">Hier kann für jeden Projektleiter ein persönliches Login-Passwort gesetzt oder geändert werden.</p><div id="leaderAccessList" class="reports-list"></div></dialog>
+  <dialog id="leaderLoginDialog"><div class="dialog-head"><div><p class="eyebrow">Geschützter Bereich</p><h2>Projektleiter-Login</h2></div><button class="icon-button" data-close-login aria-label="Schliessen">×</button></div><div class="login-form"><label>Projektleiter<select id="leaderLoginName"></select></label><label>Passwort<input type="password" id="leaderLoginPassword" autocomplete="current-password"></label><button class="primary full" id="leaderLoginSubmit">Anmelden</button><p class="error" id="leaderLoginError"></p></div></dialog>
+  <datalist id="employeeNames"></datalist>
+  <dialog id="authDialog"><div class="dialog-head"><div><p class="eyebrow">Geschützter Zugriff</p><h2>Zugriffsschlüssel</h2></div></div><p>Geben Sie den für diese App eingerichteten Schlüssel ein.</p><label>Schlüssel<input type="password" id="authKey" autocomplete="current-password"></label><button class="primary full" id="authSubmit">Öffnen</button><p class="error" id="authError"></p></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="/app.js" defer></script>
+</body>
+</html>
